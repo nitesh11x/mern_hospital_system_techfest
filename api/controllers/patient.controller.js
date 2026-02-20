@@ -1,0 +1,131 @@
+import jwt from "jsonwebtoken";
+import { asyncHandler } from "../utils/asyncHandler.util.js";
+import { errorHandler } from "../utils/errorHandler.utils.js";
+import { Patient } from "../models/Patient.model.js";
+import bcrypt from "bcryptjs";
+import cloudinary from 'cloudinary'
+
+export const registerPatient = asyncHandler(async (req, res, next) => {
+  const {
+    patientId,
+    firstName,
+    lastName,
+    email,
+    password,
+    phone,
+    dob,
+    gender,
+  } = req.body;
+
+  if (!firstName || !lastName || !email || !password || !phone || !dob || !gender) {
+    return next(new errorHandler("All fields are required", 400));
+  }
+
+  const isExist = await Patient.findOne({ email });
+  if (isExist) {
+    return next(new errorHandler("User already registered", 400));
+  }
+
+  let profileData = {};
+
+  if (req.files?.profile) {
+    const result = await cloudinary.v2.uploader.upload(
+      req.files.profile.tempFilePath,
+      { folder: "hospital_System/patient/profile" }
+    );
+
+    profileData = {
+      url: result.secure_url,
+      public_id: result.public_id,
+    };
+  }
+
+  const patient = await Patient.create({
+    patientId,
+    firstName,
+    lastName,
+    email,
+    password,
+    phone,
+    dob,
+    gender,
+    profileUrl: profileData,
+  });
+
+  const token = jwt.sign(
+    { id: patient._id, role: "Patient" },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN }
+  );
+
+  res.cookie("patientToken", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+
+  return res.status(201).json({
+    success: true,
+    message: "User registered successfully",
+    patient: {
+      _id: patient._id,
+      firstName: patient.firstName,
+      lastName: patient.lastName,
+      email: patient.email
+    }
+  });
+});
+
+export const loginPatientWithPassword = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return next(new errorHandler("Email and password required", 400));
+  }
+
+  const patient = await Patient.findOne({ email }).select("+password");
+
+  if (!patient) {
+    return next(new errorHandler("User not found", 404));
+  }
+
+  const isMatch = await patient.comparePassword(password);
+
+  if (!isMatch) {
+    return next(new errorHandler("Invalid credentials", 400));
+  }
+
+  const token = jwt.sign(
+    { id: patient._id, role: "Patient" },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN }
+  );
+
+  res.cookie("patientToken", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+
+  const safePatient = await Patient.findById(patient._id).select("-password");
+
+  return res.status(200).json({
+    success: true,
+    message: "Login successful",
+    patient: safePatient
+  });
+});
+
+export const logoutPatient = asyncHandler(async (req, res) => {
+  res.cookie("patientToken", "", {
+    httpOnly: true,
+    expires: new Date(0)
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully"
+  });
+});
