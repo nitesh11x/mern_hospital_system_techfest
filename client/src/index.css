@@ -5,3 +5,7 @@
     --color-primary-dark: #0F766E;
     --color-background: #F9FAFB;
 }
+
+body::-webkit-scrollbar {
+    display: none;
+}

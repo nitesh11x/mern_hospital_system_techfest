@@ -1,6 +1,6 @@
 import React from 'react'
-import Home from './Home'
-import Services from './Services'
+import Home from '../section/Home'
+import Services from '../section/Services'
 
 const Hero = () => {
     return (

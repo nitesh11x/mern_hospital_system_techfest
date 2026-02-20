@@ -52,7 +52,7 @@ const Home = () => {
                             src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=800"
                             //   src="Hospital_logo.png" 
                             alt="Modern Clinic"
-                            className="relative rounded-[3rem] shadow-3xl z-10 w-full h-[600px] object-cover ring-8 ring-white"
+                            className="relative rounded-[3rem] shadow-3xl z-10 w-full h-150 object-cover ring-8 ring-white"
                         />
                     </motion.div>
                 </div>
