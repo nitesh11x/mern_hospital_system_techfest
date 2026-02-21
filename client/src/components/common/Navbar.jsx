@@ -54,7 +54,7 @@ const Navbar = () => {
                     </div>
 
                     <div className="flex items-center gap-4 border-l pl-8 border-gray-200">
-                        <a href="/patient/login" className="text-sm font-semibold text-gray-700 hover:text-primary transition">
+                        <a href="/login" className="text-sm font-semibold text-gray-700 hover:text-primary transition">
                             Sign In
                         </a>
                         <a

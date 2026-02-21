@@ -1,8 +1,12 @@
 import jwt from "jsonwebtoken";
+import ErrorHandler from "../utils/errorHandler.utils.js";
 
-const isAuthenticated = async (req, res, next) => {
+export const isPatientAuth = (req, res, next) => {
     const token = req.cookies.patientToken;
-    if (!token) return next(new errorHandler("Not authenticated", 401));
+
+    if (!token) {
+        return next(new ErrorHandler("Not authenticated", 401));
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;

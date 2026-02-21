@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cloudinary from 'cloudinary'
 import { connectDb } from "./lib/db.js";
-import { errrorMiddleware } from "./middlewares/error.middleware.js";
+import { errorMiddleware } from "./middlewares/error.middleware.js";
 import fileUpload from "express-fileupload";
 const app = express()
 dotenv.config()
@@ -24,20 +24,19 @@ app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: '/tmp/'
 }))
-
 app.use(express.json())
 app.get('/', (req, res) => {
     res.json({
         success: true, message: "welcome to social media backend api"
     })
 })
-import userRouter from "./routes/user.route.js";
+import userRouter from "./routes/patient.route.js";
 import otpRouter from "./routes/otp.route.js";
 
-app.use("/api/user", userRouter);
+app.use("/api/patient", userRouter);
 app.use("/api/otp", otpRouter);
 
-app.use(errrorMiddleware)
+app.use(errorMiddleware)
 await connectDb()
 const PORT = process.env.PORT
 app.listen(PORT, () => console.log(`server is live on ${PORT}`))

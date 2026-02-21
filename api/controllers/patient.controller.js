@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { asyncHandler } from "../utils/asyncHandler.util.js";
-import { errorHandler } from "../utils/errorHandler.utils.js";
+import ErrorHandler from "../utils/errorHandler.utils.js";
 import { Patient } from "../models/Patient.model.js";
 import bcrypt from "bcryptjs";
 import cloudinary from 'cloudinary'
@@ -18,12 +18,12 @@ export const registerPatient = asyncHandler(async (req, res, next) => {
   } = req.body;
 
   if (!firstName || !lastName || !email || !password || !phone || !dob || !gender) {
-    return next(new errorHandler("All fields are required", 400));
+    return next(new ErrorHandler("All fields are required", 400));
   }
 
   const isExist = await Patient.findOne({ email });
   if (isExist) {
-    return next(new errorHandler("User already registered", 400));
+    return next(new ErrorHandler("User already registered", 400));
   }
 
   let profileData = {};
@@ -52,28 +52,24 @@ export const registerPatient = asyncHandler(async (req, res, next) => {
     profileUrl: profileData,
   });
 
-  const token = jwt.sign(
-    { id: patient._id, role: "Patient" },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN }
-  );
+  // const token = jwt.sign(
+  //   { id: patient._id, role: "Patient" },
+  //   process.env.JWT_SECRET,
+  //   { expiresIn: process.env.JWT_EXPIRES_IN }
+  // );
 
-  res.cookie("patientToken", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000
-  });
+  // res.cookie("patientToken", token, {
+  //   httpOnly: true,
+  //   secure: process.env.NODE_ENV === "production",
+  //   sameSite: "strict",
+  //   maxAge: 7 * 24 * 60 * 60 * 1000
+  // });
 
   return res.status(201).json({
     success: true,
     message: "User registered successfully",
-    patient: {
-      _id: patient._id,
-      firstName: patient.firstName,
-      lastName: patient.lastName,
-      email: patient.email
-    }
+    patient
+
   });
 });
 
@@ -81,19 +77,19 @@ export const loginPatientWithPassword = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new errorHandler("Email and password required", 400));
+    return next(new ErrorHandler("Email and password required", 400));
   }
 
   const patient = await Patient.findOne({ email }).select("+password");
 
   if (!patient) {
-    return next(new errorHandler("User not found", 404));
+    return next(new ErrorHandler("User not found", 404));
   }
 
   const isMatch = await patient.comparePassword(password);
 
   if (!isMatch) {
-    return next(new errorHandler("Invalid credentials", 400));
+    return next(new ErrorHandler("Invalid credentials", 400));
   }
 
   const token = jwt.sign(

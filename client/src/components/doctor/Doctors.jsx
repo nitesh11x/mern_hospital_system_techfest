@@ -56,7 +56,7 @@ const Doctors = () => {
                             viewport={{ once: true }}
                             className="bg-white rounded-[2.5rem] p-4 shadow-sm border border-gray-100 group hover:shadow-xl transition-all"
                         >
-                            <div className="relative overflow-hidden rounded-[2rem] h-64 mb-6">
+                            <div className="relative overflow-hidden rounded-4xl h-64 mb-6">
                                 <img src={doc.image} alt={doc.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
                                     <Star size={14} className="text-yellow-500 fill-yellow-500" />

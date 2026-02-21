@@ -1,5 +1,6 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Toaster } from "react-hot-toast";
 import Hero from './components/Home/Hero'
 import Navbar from './components/common/Navbar'
 import Login from './components/patient/Login'
@@ -10,6 +11,7 @@ import Doctors from './components/doctor/Doctors'
 import Contact from './components/section/Contact'
 import About from './components/section/About'
 import Footer from './components/common/Footer'
+import OtpForm from './components/common/OtpForm';
 
 function App() {
 
@@ -17,11 +19,13 @@ function App() {
   return (
     <>
       <BrowserRouter>
+        <Toaster position="top-right" reverseOrder />
         <Navbar />
         <Routes>
           <Route path='/' element={<Hero />}></Route>
           <Route path='/about' element={<About />}></Route>
           <Route path='/contact' element={<Contact />}></Route>
+          <Route path='/login' element={<OtpForm />}></Route>
 
 
           {/* patient routes  */}
@@ -45,7 +49,7 @@ function App() {
           {/*  routes  */}
 
         </Routes>
-        <Footer/>
+        <Footer />
       </BrowserRouter>
     </>
   )
