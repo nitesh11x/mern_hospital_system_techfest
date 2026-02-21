@@ -110,7 +110,8 @@ export const loginPatientWithPassword = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     success: true,
     message: "Login successful",
-    patient: safePatient
+    patient: safePatient,
+    patientToken: token
   });
 });
 
@@ -125,3 +126,51 @@ export const logoutPatient = asyncHandler(async (req, res) => {
     message: "Logged out successfully"
   });
 });
+
+export const patientProfile = asyncHandler(async (req, res, next) => {
+  const patientId = req.patient.id;
+  const patient = await Patient.findById(patientId).select("-password");
+  if (!patient) {
+    return next(new ErrorHandler("Invalid ID", 404));
+  }
+  res.status(200).json({
+    message: "Patient found successfully",
+    patient,
+  });
+});
+
+export const getPatientById = asyncHandler(async (req, res, next) => {
+  const patientId = req.params;
+  const patient = await Patient.findById(patientId).select("-password");
+  if (!patient) {
+    return next(new ErrorHandler("Invalid ID", 404));
+  }
+  res.status(200).json({
+    message: "Patient found successfully",
+    patient,
+  });
+});
+
+export const getAllPatient = asyncHandler(async (req, res, next) => {
+  const patientId = req.params
+  if (!patientId) return next(new ErrorHandler('patient id not found ', 400))
+  const patient = await Patient.findById(patientId).select("-password")
+  if (!patient) return next(new ErrorHandler("patient not found ", 404))
+  res.status(200).json({ success: true, message: "all patients", patient })
+})
+
+export const deletePatientById = asyncHandler(async (req, res, next) => {
+  const patientId = req.params
+  if (!patientId) return next(new ErrorHandler('patient id not found ', 400))
+  const patient = await Patient.findByIdAndDelete(patientId)
+  if (!patient) return next(new ErrorHandler("patient not found ", 404))
+  res.status(200).json({ success: true, message: "patient Deleted Successfully" })
+})
+
+export const updatePatientById = asyncHandler(async (req, res, next) => {
+
+})
+export const updatePatientStatusById = asyncHandler(async (req, res, next) => {
+
+})
+

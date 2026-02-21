@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 import { generateOtp } from "../utils/generateOtp.util.js";
-import { sendMail } from "../utils/sendMail.util.js";
+import { sendMail } from "../utils/sendOtp.util.js";
 import { Otp } from "../models/Otp.model.js";
 
 

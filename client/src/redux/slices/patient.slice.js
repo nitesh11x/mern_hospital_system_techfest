@@ -6,7 +6,17 @@ import { api } from "../../utils/axios";
 export const patientRegisterThunk = createAsyncThunk(
     "patient/register",
     async (
-        { patientId, firstName, lastName, email, password, phone, dob, gender, profile },
+        {
+            patientId,
+            firstName,
+            lastName,
+            email,
+            password,
+            phone,
+            dob,
+            gender,
+            profile,
+        },
         { rejectWithValue }
     ) => {
         try {
@@ -26,11 +36,9 @@ export const patientRegisterThunk = createAsyncThunk(
             }
 
             const response = await api.post("patient/register", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
+                headers: { "Content-Type": "multipart/form-data" },
             });
-            console.log(response.data)
+
             return response.data;
         } catch (error) {
             return rejectWithValue(
@@ -90,6 +98,12 @@ const patientSlice = createSlice({
         clearError: (state) => {
             state.error = null;
         },
+        resetPatientState: (state) => {
+            state.patient = null;
+            state.loading = false;
+            state.error = null;
+            state.isPatientAuthenticated = false;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -103,6 +117,7 @@ const patientSlice = createSlice({
                 state.loading = false;
                 state.patient = action.payload.patient;
                 state.isPatientAuthenticated = true;
+                state.error = null;
             })
             .addCase(patientRegisterThunk.rejected, (state, action) => {
                 state.loading = false;
@@ -118,6 +133,8 @@ const patientSlice = createSlice({
                 state.loading = false;
                 state.patient = action.payload.patient;
                 state.isPatientAuthenticated = true;
+                state.error = null;
+                console.log(action.payload)
             })
             .addCase(patientLoginThunk.rejected, (state, action) => {
                 state.loading = false;
@@ -125,13 +142,22 @@ const patientSlice = createSlice({
             })
 
             /* LOGOUT */
+            .addCase(patientLogoutThunk.pending, (state) => {
+                state.loading = true;
+            })
             .addCase(patientLogoutThunk.fulfilled, (state) => {
+                state.loading = false;
                 state.patient = null;
                 state.isPatientAuthenticated = false;
+                state.error = null;
+            })
+            .addCase(patientLogoutThunk.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });
 
-export const { clearError } = patientSlice.actions;
+export const { clearError, resetPatientState } = patientSlice.actions;
 
 export default patientSlice.reducer;
