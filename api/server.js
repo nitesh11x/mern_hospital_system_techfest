@@ -24,7 +24,9 @@ app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: '/tmp/'
 }))
-app.use(express.json())
+app.use(express.json());
+app.use(cookieParser());
+
 app.get('/', (req, res) => {
     res.json({
         success: true, message: "welcome to social media backend api"
@@ -32,9 +34,18 @@ app.get('/', (req, res) => {
 })
 import userRouter from "./routes/patient.route.js";
 import otpRouter from "./routes/otp.route.js";
+import doctorRouter from "./routes/doctor.route.js";
+import adminRouter from "./routes/admin.route.js";
+import appointmentRouter from "./routes/appointment.route.js";
+import reviewRouter from "./routes/review.route.js";
 
 app.use("/api/patient", userRouter);
 app.use("/api/otp", otpRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/doctor", doctorRouter);
+app.use("/api/review", reviewRouter);
+app.use("/api/appointment", appointmentRouter);
+
 
 app.use(errorMiddleware)
 await connectDb()

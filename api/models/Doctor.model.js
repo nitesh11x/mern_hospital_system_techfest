@@ -1,15 +1,32 @@
 import mongoose from "mongoose";
+
 const doctorSchema = new mongoose.Schema(
     {
+        profile: {
+            type: String, 
+        },
         user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Patient",
-            required: true
+            ref: "Patient", 
+            required: true,
+            unique: true // usually one doctor profile per user
         },
-        specialization: String,
-        experience: Number,
-        fees: Number,
-        bio: String,
+        specialization: {
+            type: String,
+            trim: true
+        },
+        experience: {
+            type: Number, 
+            default: 0
+        },
+        fees: {
+            type: Number,
+            default: 0
+        },
+        bio: {
+            type: String,
+            trim: true
+        },
         rating: {
             type: Number,
             default: 0
@@ -21,7 +38,7 @@ const doctorSchema = new mongoose.Schema(
         availableSlots: [
             {
                 date: Date,
-                slots: [String] // ["10:00 AM", "11:00 AM"]
+                slots: [String] // e.g. ["10:00 AM", "11:00 AM"]
             }
         ]
     },

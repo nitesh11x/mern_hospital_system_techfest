@@ -26,13 +26,13 @@ const appointmentSchema = new mongoose.Schema(
         },
         paymentMode: {
             type: String,
-            enum: ["online", "offline"],
+            enum: ["Online", "Offline"],
             required: true
         },
         paymentStatus: {
             type: String,
-            enum: ["pending", "paid", "failed"],
-            default: "pending"
+            enum: ["Pending", "Paid", "Failed"],
+            default: "Pending"
         },
         isRecheck: {
             type: Boolean,
