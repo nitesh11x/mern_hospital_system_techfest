@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const { isPatientAuthenticated } = useSelector(state => state.patient)
 
     // Handle scroll effect for glassmorphism
     useEffect(() => {
@@ -15,10 +17,10 @@ const Navbar = () => {
     }, []);
 
     const navLinks = [
-        { name: "Home", href: "/" },
-        { name: "About", href: "/about" },
-        { name: "Doctors", href: "/doctors/all" },
-        { name: "Contact", href: "/contact" },
+        { name: "Home", to: "/" },
+        { name: "About", to: "/about" },
+        { name: "Doctors", to: "/doctors/all" },
+        { name: "Contact", to: "/contact" },
     ];
 
     return (
@@ -42,28 +44,34 @@ const Navbar = () => {
                 <div className="hidden md:flex items-center space-x-10">
                     <div className="flex space-x-8">
                         {navLinks.map((link) => (
-                            <a
+                            <Link
                                 key={link.name}
-                                href={link.href}
+                                to={link.to}
                                 className="relative text-sm font-medium text-gray-600 hover:text-primary transition-colors group"
                             >
                                 {link.name}
                                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-                            </a>
+                            </Link>
                         ))}
                     </div>
 
                     <div className="flex items-center gap-4 border-l pl-8 border-gray-200">
-                        <a href="/login" className="text-sm font-semibold text-gray-700 hover:text-primary transition">
+                        {!isPatientAuthenticated && <Link to={'/login'} className="text-sm font-semibold text-gray-700 hover:text-primary transition">
                             Sign In
-                        </a>
-                        <a
-                            href="/appointment"
+                        </Link>}
+                        {isPatientAuthenticated && < Link to={'/patient/dashboard'} className="text-sm font-semibold text-gray-700 hover:text-primary transition">
+                            Dashboard
+                        </Link>}
+                        <Link
+                            to={'appointment/new'}
                             className="group flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-medium hover:bg-primary-dark transition shadow-lg shadow-primary/20"
                         >
                             Book Now
                             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                        </a>
+                        </Link>
+                        {!isPatientAuthenticated && <Link to={'/patient/login'} className="text-sm font-semibold text-gray-700 hover:text-primary transition">
+                            log In
+                        </Link>}
                     </div>
                 </div>
 
@@ -107,7 +115,7 @@ const Navbar = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </nav>
+        </nav >
     );
 };
 

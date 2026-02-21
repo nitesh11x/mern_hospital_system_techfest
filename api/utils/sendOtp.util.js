@@ -14,7 +14,7 @@ export const sendMail = asyncHandler(async (to, otp) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: to,
-    subject: "Email Verification - Nmedia",
+    subject: "Email Verification - New Care",
     html: `
       <div style="font-family: Arial, sans-serif; padding:20px;">
         <h2 style="color:#1a73e8;">Nmedia Verification</h2>

@@ -25,7 +25,7 @@ const Register = () => {
   const [profileFile, setProfileFile] = useState(null);
 
   const [formData, setFormData] = useState({
-    patientId: "PT-" + Math.floor(Math.random() * 100000),
+    patientId: "NEW-" + Math.floor(Math.random() * 100000),
     firstName: "",
     lastName: "",
     email: localStorage.getItem('patientEmail'),
