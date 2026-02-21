@@ -1,0 +1,21 @@
+// models/Notification.js
+import mongoose from "mongoose";
+
+const notificationSchema = new mongoose.Schema(
+    {
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        title: String,
+        message: String,
+        isRead: {
+            type: Boolean,
+            default: false
+        },
+        scheduledFor: Date
+    },
+    { timestamps: true }
+);
+
+export const Notification = mongoose.model("Notification", notificationSchema);
